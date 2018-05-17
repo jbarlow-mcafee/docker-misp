@@ -71,31 +71,55 @@ cd docker-misp
 
 This will produce an image called: ```opendxlcommunity/docker-misp```
 
-# How to run it in 3 steps:
+# How to run it in 2 steps:
 
 About ```$docker-root``` - If you are running Docker on a Mac, there are some mount directory restrictions by default (see: https://docs.docker.com/docker-for-mac/osxfs/#namespaces). Your ```$docker-root``` needs to be either one of the supported defaults ("Users", "Volumes", "private", or "tmp"), otherwise, you must go to "Preferences" -> "File Sharing" and add your chosen $docker-root to the list.
 
 We would suggest using ```/docker``` for your ```$docker-root```, and if using a Mac, adding that to the File Sharing list.
 
-## 1. Initialize Database
+## 1. Start the container
+
+If you just want to quickly spin up a new MISP container without needing to
+preserve any application data beyond the lifetime of the new container, you can
+run the following command:
 
 ```
 docker run -it --rm \
-    -v $docker-root/misp-db:/var/lib/mysql \
-    opendxlcommunity/misp /init-db
+    -p 443:443 \
+    -p 80:80 \
+    -p 3306:3306 \
+    -p 50000:50000 \
+    opendxlcommunity/misp
 ```
 
-## 2. Start the container
+In this mode, the container will, on its initial startup, generate an internal
+database, app, and SSL certificate/key configuration.
+
+If you want to have the container preserve / use data from external volumes, you
+can run the following command instead:
+
 ```
 docker run -it -d \
     -p 443:443 \
     -p 80:80 \
     -p 3306:3306 \
+    -p 50000:50000 \
     -v $docker-root/misp-db:/var/lib/mysql \
+    -v $docker-root/misp-config:/var/www/MISP/app/Config \
     opendxlcommunity/misp
 ```
 
-## 3. Access Web URL
+A new database will automatically be created and stored into the
+`$docker-root/misp-db` directory if the directory is empty as the container is
+started up for the first time. The contents of the directory should be preserved
+even if the container is restarted (or a new container referencing the same
+volume is created).
+
+Similarly, the contents of the `$docker-root/misp-config` directory will be
+populated with default MISP configuration data only if the directory is
+empty at container startup time.
+
+## 2. Access Web URL
 ```
 Go to: https://localhost (or your "MISP_FQDN" setting)
 
@@ -117,6 +141,7 @@ You can customize the ```build.sh``` script to pass custom:
 See build.sh for an example on how to customize and build your own image with custom defaults.
 
 # How to use custom SSL Certificates:
+
 During run-time, override ```/etc/ssl/private```
 
 ```
@@ -124,8 +149,10 @@ docker run -it -d \
     -p 443:443 \
     -p 80:80 \
     -p 3306:3306 \
+    -p 50000:50000 \
     -v $docker-root/certs:/etc/ssl/private \
     -v $docker-root/misp-db:/var/lib/mysql \
+    -v $docker-root/misp-config:/var/www/MISP/app/Config \
     opendxlcommunity/misp
 ```
 
@@ -133,6 +160,10 @@ And in your ```/certs``` dir, create private/public certs with file names:
 
 * misp.key
 * misp.crt
+
+If the ```/certs``` dir does not contain a ```misp.crt``` and ```misp.key```
+file at container startup time, a self-signed ```misp.crt``` and associated
+```misp.key``` will be automatically generated.
 
 # Security note in regards to key generation:
 We have added "rng-tools" in order to help with entropy generation,
