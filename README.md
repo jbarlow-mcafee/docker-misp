@@ -5,15 +5,28 @@ Docker MISP Container
 Latest Upstream Change Included: 6df6cc79bc0dbbc0307d57767ac47c09f1a0bf1c
 
 Github repo + build script here:
-https://github.com/harvard-itsecurity/docker-misp
+https://github.com/opendxl-community/docker-misp
 (note: after a git pull, update ```build.sh``` with your own passwords/FQDN, and then build the image)
 
 NOTE: Cannot autobuild on DockerHub due to size+time limit, and we
 refuse to break this up into multiple images and chain them just to
 get around the tiny resources that DockerHub provides!
 
-
 # What is this?
+
+This is a fork of the excellent
+[harvard-itsecurity/docker-misp](https://github.com/harvard-itsecurity/docker-misp)
+project. The only difference between this fork and the upstream project at
+present is some additional work in the Docker image to allow for data volumes to
+be automatically mounted and initialized on startup of a new MISP container.
+This fork exists as an experiment for quick standup of a MISP container in the
+[Docker Kitematic UI](https://kitematic.com/) with a bit less reliance on
+executing commands from the Docker shell. This fork will likely lag behind the
+well-maintained upstream project. For purposes other than quick testing of a
+MISP setup with Kitematic, it would be much better to use the
+[harvard-itsecurity/docker-misp](https://github.com/harvard-itsecurity/docker-misp)
+project directly rather than this fork.
+
 This is an easy and highly customizable Docker container with MISP -
 Malware Information Sharing Platform & Threat Sharing (http://www.misp-project.org)
 
@@ -44,7 +57,7 @@ a feel" for MISP without building it. It will by default contain "LOCALHOST" as 
 
 Building your own MISP Docker image is incredibly simple:
 ```
-git clone https://github.com/harvard-itsecurity/docker-misp.git
+git clone https://github.com/opendxl-community/docker-misp.git
 cd docker-misp
 
 # modify build.sh, specifically for:
@@ -56,7 +69,7 @@ cd docker-misp
 ./build.sh
 ```
 
-This will produce an image called: ```harvarditsecurity/docker-misp```
+This will produce an image called: ```opendxlcommunity/docker-misp```
 
 # How to run it in 3 steps:
 
@@ -69,7 +82,7 @@ We would suggest using ```/docker``` for your ```$docker-root```, and if using a
 ```
 docker run -it --rm \
     -v $docker-root/misp-db:/var/lib/mysql \
-    harvarditsecurity/misp /init-db
+    opendxlcommunity/misp /init-db
 ```
 
 ## 2. Start the container
@@ -79,7 +92,7 @@ docker run -it -d \
     -p 80:80 \
     -p 3306:3306 \
     -v $docker-root/misp-db:/var/lib/mysql \
-    harvarditsecurity/misp
+    opendxlcommunity/misp
 ```
 
 ## 3. Access Web URL
@@ -113,7 +126,7 @@ docker run -it -d \
     -p 3306:3306 \
     -v $docker-root/certs:/etc/ssl/private \
     -v $docker-root/misp-db:/var/lib/mysql \
-    harvarditsecurity/misp
+    opendxlcommunity/misp
 ```
 
 And in your ```/certs``` dir, create private/public certs with file names:
@@ -134,6 +147,3 @@ process after it has been used.
 
 # Contributions:
 Conrad Crampton: conrad.crampton@secdata.com - @radder5 - RNG Tools and MISP Modules
-
-# Help/Questions/Comments:
-For help or more info, feel free to contact Ventz Petkov: ventz_petkov@harvard.edu
