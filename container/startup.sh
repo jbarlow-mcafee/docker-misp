@@ -13,4 +13,12 @@ if [ ! -f /etc/ssl/private/.ssl_initialized ] && [ ! -f /etc/ssl/private/misp.cr
     touch /etc/ssl/private/.ssl_initialized
 fi
 
+
+if [ -n "${MISP_BASE_URL}" ]; then
+    if [[ ! "${MISP_BASE_URL}" =~ ^https?:\/\/ ]]; then
+        MISP_BASE_URL="https://${MISP_BASE_URL}"
+    fi
+    sed -i -E "s/'baseurl'(\s+).*'.*'/'baseurl' => '${MISP_BASE_URL//\//\\/}'/" /var/www/MISP/app/Config/config.php
+fi
+
 /usr/bin/supervisord -c "/etc/supervisor/conf.d/supervisord.conf"
