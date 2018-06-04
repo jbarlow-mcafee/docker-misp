@@ -5,12 +5,11 @@ Docker MISP Container
 Latest Upstream Change Included: 6df6cc79bc0dbbc0307d57767ac47c09f1a0bf1c
 
 Github repo + build script here:
-https://github.com/opendxl-community/docker-misp
+[https://github.com/opendxl-community/docker-misp](https://github.com/opendxl-community/docker-misp)
 (note: after a git pull, update ```build.sh``` with your own passwords/FQDN, and then build the image)
 
-NOTE: Cannot autobuild on DockerHub due to size+time limit, and we
-refuse to break this up into multiple images and chain them just to
-get around the tiny resources that DockerHub provides!
+Docker hub image here:
+[https://hub.docker.com/r/opendxlcommunity/misp](https://hub.docker.com/r/opendxlcommunity/misp)
 
 # What is this?
 
@@ -69,7 +68,7 @@ cd docker-misp
 ./build.sh
 ```
 
-This will produce an image called: ```opendxlcommunity/docker-misp```
+This will produce an image called: ```opendxlcommunity/misp```
 
 # How to run it in 2 steps:
 
